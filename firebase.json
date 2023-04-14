@@ -1,0 +1,24 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [ {
+      "source" : "**_*@(jpg|jpeg|gif|png)",
+      "headers" : [ {
+        "key" : "Access-Control-Allow-Origin",
+        "value" : "*"
+      } ]
+    } ]
+  }
+  
+}
