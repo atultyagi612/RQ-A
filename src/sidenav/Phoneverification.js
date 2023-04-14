@@ -42,16 +42,16 @@ const Phoneverification = () => {
         const randomotp=Math.floor(100000 + Math.random() * 900000)
         setrandomopt(randomotp)
         const response = await axios.post(
-          'https://api.twilio.com/2010-04-01/Accounts/AC2d8209c25be19fde25371fa26546ec0e/Messages.json',
+          'https://api.twilio.com/2010-04-01/Accounts/XXXXXXXXXXXXXXXXXXXXXXX/Messages.json',
           new URLSearchParams({
             'To': phoneno,
-            'MessagingServiceSid': 'MGe0d7ffbba5bca659bccda71d5b800199',
+            'MessagingServiceSid': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
             'Body': 'Your OTP for RQ-A is: '+randomotp
           }),
           {
             auth: {
-              username: 'AC2d8209c25be19fde25371fa26546ec0e',
-              password: 'f547ab43320e17a713764045f3c1c541'
+              username: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+              password: 'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
             }
           }
         );
