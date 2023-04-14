@@ -1,0 +1,57 @@
+.updatetext{
+  font-size: smaller;
+}
+._loading_overlay_content {
+  /* top: 45%;
+  left: 45%;
+  position: fixed; */
+  display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 40vh;
+}
+/* carsoule maisite   */
+.carousel .slide .legend{
+  width: auto;
+  margin-left: 0px;
+  transform: translate(-50%, 0);
+  bottom: 15px;
+}
+  
+  
+  .infobuttontooltip{
+    color: grey !important;
+  }
+  .infobuttontooltip:hover{
+    color: rgb(82, 79, 79) !important;
+  }
+  div.tooltip div{
+    color: rgba(0, 0, 0, 0.775);
+    padding: 10px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    box-sizing: border-box;
+    background-color: #fff;
+    width: 240px;
+  }
+  div.tooltip div >p{
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .viewuser {
+      flex-direction: column;
+    }
+    div:has(div.viewuser) {    padding: 10px;}
+    #Titletmp{
+      font-size: 60px;
+    }
+    .boo-wrapper{
+      padding-top:10px;
+    }
+    .container{
+      padding-top: 2rem !important;
+    }
+
+  }
