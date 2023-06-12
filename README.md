@@ -7,9 +7,17 @@ Revolutionize road inspections with our app that detects road defects with ease!
 
 
 
+
+
+
+
 ## Screenshots
 
-![App Screenshot](https://github.com/atultyagi612/RQ-A/blob/e37591d87cf3f50574b1c6410e4a482369c8bf13/demo/ezgif-4-7620a7c65b.gif)
+<!-- ![App Screenshot](https://github.com/atultyagi612/RQ-A/blob/e37591d87cf3f50574b1c6410e4a482369c8bf13/demo/ezgif-4-7620a7c65b.gif) -->
+
+
+https://github.com/atultyagi612/RQ-A/assets/69669017/b2604f89-a74b-41c0-878f-2793aca3172e
+
 
 By analysing photographs or videos of roads to identify various objects and categorise flaws that can impair road quality, this app uses object detection techniques that can produce reports on the condition of the roads. Generated reports with details on the position and seriousness of discovered objects can aid in prioritising road upkeep, repairs, and long-term monitoring of road conditions. This software can be modified to find particular kinds of flaws, and these findings can be easily shared with the appropriate parties for efficient maintenance, such as road inspectors, maintenance workers, and decision-makers.
 ## Live Application URL
