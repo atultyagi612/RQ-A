@@ -1,14 +1,16 @@
-import React from 'react'
+import React,{useState} from 'react'
 import ReactPlayer from 'react-player/lazy';
 import './dashboard.css'
 import Bar_chart from './Bar_chart'
 import { MDBTooltip } from 'mdb-react-ui-kit';
 import { RWebShare } from "react-web-share";
-
+import Resolved from './Resolved'
 const card = (item) => {
+  
     var isfirst=true;
     var isfirstbutton=true;
     var incrslider=-1;
+    
 
     const getdate=(timestamp)=>{
         var dateFormat = new Date(timestamp) 
@@ -16,9 +18,10 @@ const card = (item) => {
            "/"+(dateFormat.getMonth()+1)+
            "/"+dateFormat.getFullYear()+
            " "+dateFormat.getHours()+
-           ":"+dateFormat.getMinutes()+
-           ":"+dateFormat.getSeconds())
+           ":"+dateFormat.getMinutes())
     }
+
+
     function timeDiff(pdate) {
       const curr=new Date()
       const prev=new Date(pdate)
@@ -156,10 +159,6 @@ VIEW BAR-CHART
       <button type="button"  className="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
       </div>
     <div className="modal-body">
-      
-      
-      
-      
 
     <div className={"note note-"+temp23.status["1"]+" mb-3"}>
 <strong>Note :</strong>{temp23.status["2"]}
@@ -361,6 +360,7 @@ className="w-100" alt='alternate' />)
     <>
     <div className="row justify-content-center mb-3" >
     <div className="col-md-12 col-xl-10">
+    {item.data.resolved?item.data.reopen?<span className='badge  badge-danger w-100 p-2' >RE-OPENED</span>:<span className='badge  badge-success w-100 p-2' >RESOLVED</span>:<></>}
       <div className="card shadow-0 border rounded-3">
         <div className="card-body">
           <div className="row">
@@ -417,10 +417,13 @@ className="w-100" alt='alternate' />)
               </div>
             </div>
           </div>
+          <Resolved id={item.id} key={item.id} data ={item.data}  reload={item.reload} reopen={true}/>
+          
         </div>
       </div>
     </div>
   </div>
+
 
 
 </>

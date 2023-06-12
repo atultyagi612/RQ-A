@@ -23,7 +23,9 @@ const Dashboard = () => {
   const [slides,setslide]=useState([])
   const [openn, setOpen] = useState(false);
   const[ openvideo,setOpenvideo]=useState(false)
+  
   const [emptyreport,setemptyreport]=useState()
+ 
 
   useEffect(() => {
     fetchBlogs();
@@ -165,8 +167,9 @@ const setslides=(data)=>{
 {data.map(item=>{
   
   modalincrement+=1
-  return (<Card id={item.id} setslides={setslides}   data={item.data()} key={item.id}  modalincrement={modalincrement}   setmaplocation={setmarkerlocation}  deletedoc={deletedocpromp} update={setupdateid}/>)
+  return (<Card id={item.id}   setslides={setslides}   data={item.data()} key={item.id}  modalincrement={modalincrement}   setmaplocation={setmarkerlocation}  deletedoc={deletedocpromp} update={setupdateid} reload={fetchBlogs}/>)
 })}
+
 
 
 

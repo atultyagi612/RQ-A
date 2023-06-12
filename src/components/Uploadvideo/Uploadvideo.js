@@ -7,6 +7,7 @@ import { UseUserAuth } from '../../context/UserAuthContext'
 import Submitmodal from './Submitmodal';
 import { toast, Toaster } from "react-hot-toast";
 import Loader from '../Loader';
+import KickURL from '../KickURL';
 const Uploadvideo = () => {
   const { user} = UseUserAuth();
   const [video,savevideo]=useState(null);
@@ -45,14 +46,15 @@ const Uploadvideo = () => {
               uploadBytes(imageref,video).then(async(videooutput)=>{
                 const videourl=`https://firebasestorage.googleapis.com/v0/b/temp-fbe64.appspot.com/o/${videooutput.metadata.fullPath}?alt=media&token=231ce46b-d69e-4919-9e19-18bff44cc50a`
     
-                await addDoc(usercollectionref,{name:user.displayName , email:user.email , photourl:user.photoURL , videourl: videourl,
+                await addDoc(usercollectionref,{name:user.displayName ,resolvestatus:false, email:user.email , photourl:user.photoURL , videourl: videourl,
                   address:address ,message:message,isvideo:true,isgeocord:false,date:Date.now(), location:geolocation }).then((refff)=>{
                     console.log(refff)
-                    addDoc(needdetection,{docid:refff.id,isvideo:true , islive:false,fileurl:videourl}).then(()=>{
+                    addDoc(needdetection,{docid:refff.id,isvideo:true , islive:false,fileurl:videourl}).then((needdetdoc)=>{
                       setLoaded(false)
                     toast.success("uploaded succefully")
                     document.getElementById('uploadvideosubmitbutton').innerHTML="Done"
                     document.getElementById('uploadvideosubmitbutton').disabled=false
+                    KickURL(needdetdoc.id)
                   })
               })
       })

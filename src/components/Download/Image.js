@@ -9,6 +9,7 @@ export default function Image(props) {
 
   useEffect(()=>{
     autodownload()
+    
   },[])
   const autodownload=async()=>{
      exportPDFWithComponent()
@@ -208,13 +209,14 @@ export default function Image(props) {
                       </div>
                       <h4 className="mt-4 mb-4">Visual output</h4>
                       <div>
-                        {props.data.outimages.map((img , key)=>{
+                        {/* {props.data.outimages.map((img , key)=>{
                           return(<img key={key}
                             src={img}
                             className="img-fluid"
                             alt="Wild Landscape"
                           />)
-                        })}
+                        })} */}
+                        <a  href={window.location.origin+"/view_media?id="+props.id} target="_blank" type="button" class="btn btn-outline-secondary   btn-block btn-sm" data-mdb-ripple-color="#000000" > View Images </a>
                         
                        
                       </div>

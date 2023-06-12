@@ -4,6 +4,7 @@ import {db} from "../../firebase"
 import {collection,getDocs,query, orderBy ,doc,where,deleteDoc,limit , startAfter , getCountFromServer } from 'firebase/firestore';
 import Card from './Card'
 import "./explore.css"
+import { MDBTooltip } from 'mdb-react-ui-kit';
 import Video from "yet-another-react-lightbox/plugins/video";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
@@ -33,14 +34,17 @@ const Explore = () => {
     const { user} = UseUserAuth();
     const [currlocationmodalbody , setmodalbody]=useState()
     const [lastreport , setlastreport]=useState()
+    const [diffuserdata,setdiffuserdata]=useState({})
     const [currsorttype,setcurrsorttype]=useState('Date, new to old')
+    const [viewuserdata , setviewuserdata]=useState({})
+    const [isresolvedview , setisresolvedview]=useState([true])
     var modalincrement=59
     const limitreportvalue=3
     const  usercollectionref=collection(db,"user");
 
     useEffect(() => {
         fetchBlogs();
-        totalitems(query(usercollectionref, where('isdone',"==",true), orderBy('date', "desc") ));
+        totalitems(query(usercollectionref, where('isdone',"==",true) , where('resolvestatus','==',false)));
         document.getElementById('recordvideotxt').innerText=''
       }, [])
 
@@ -48,7 +52,7 @@ const Explore = () => {
       const fetchBlogs=async()=>{
         setdata([])
         var videopath=[]
-        const querySnapshot = await getDocs(query(usercollectionref, where('isdone',"==",true), orderBy('date', "desc"), limit(limitreportvalue) ))
+        const querySnapshot = await getDocs(query(usercollectionref, where('isdone',"==",true), where('resolvestatus','==',false), orderBy('date', "desc"), limit(limitreportvalue) ))
     
         querySnapshot.forEach((item) => {
           if(item.data().isgeocord){
@@ -63,6 +67,16 @@ const Explore = () => {
     setquerytype(1)
     }
 
+    const isresolved=()=>{
+      if(isresolvedview===true){
+        setisresolvedview(!isresolvedview)
+        document.getElementById('isresolvedicon').style.display='none'
+      }
+      else{
+        setisresolvedview(!isresolvedview)
+        document.getElementById('isresolvedicon').style.display='initial'
+      }
+    }
     const totalitems=async(qurey)=>{
       const snapshot = await getCountFromServer(qurey)
       settotalreport(snapshot.data().count)
@@ -70,31 +84,31 @@ const Explore = () => {
 
     const loadmorerecords=async()=>{
       if (querytype===1){
-        var querytp=query(usercollectionref, orderBy('date', "desc"),where('isdone',"==",true), limit(limitreportvalue)  ,startAfter(lastreport) )
+        var querytp=query(usercollectionref, orderBy('date', "desc"),where('resolvestatus','==',false),where('isdone',"==",true), limit(limitreportvalue)  ,startAfter(lastreport) )
       }
       else if (querytype===2){
-        var querytp=query(usercollectionref,where("address."+currloctype,"==",currlocvalue),where('isdone',"==",true), limit(limitreportvalue)  ,startAfter(lastreport) )
+        var querytp=query(usercollectionref,where('resolvestatus','==',false),where("address."+currloctype,"==",currlocvalue),where('isdone',"==",true), limit(limitreportvalue)  ,startAfter(lastreport) )
       }
       else if (querytype===3){
-        var querytp=query(usercollectionref, where('isdone',"==",true), orderBy('date', "desc"), limit(limitreportvalue)  ,startAfter(lastreport) )
+        var querytp=query(usercollectionref,where('resolvestatus','==',false), where('isdone',"==",true), orderBy('date', "desc"), limit(limitreportvalue)  ,startAfter(lastreport) )
       }
       else if (querytype===4){
-        var querytp=query(usercollectionref, where('isdone',"==",true), orderBy('date') , limit(limitreportvalue)  ,startAfter(lastreport))
+        var querytp=query(usercollectionref,where('resolvestatus','==',false), where('isdone',"==",true), orderBy('date') , limit(limitreportvalue)  ,startAfter(lastreport))
       }
       else if (querytype===5){
-        var querytp=query(usercollectionref, where('isdone',"==",true), orderBy('ADPF', "desc"), limit(limitreportvalue)  ,startAfter(lastreport) )
+        var querytp=query(usercollectionref,where('resolvestatus','==',false), where('isdone',"==",true), orderBy('ADPF', "desc"), limit(limitreportvalue)  ,startAfter(lastreport) )
       }
       else if (querytype===6){
-        var querytp=query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date', "desc") , orderBy('ADPF', "desc"), limit(limitreportvalue)  ,startAfter(lastreport)  )
+        var querytp=query(usercollectionref, where('resolvestatus','in',isresolvedview),where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date', "desc") , orderBy('ADPF', "desc"), limit(limitreportvalue)  ,startAfter(lastreport)  )
       }
       else if (querytype===7){
-        var querytp=query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date', "desc"), limit(limitreportvalue)  ,startAfter(lastreport))
+        var querytp=query(usercollectionref, where('resolvestatus','in',isresolvedview),where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date', "desc"), limit(limitreportvalue)  ,startAfter(lastreport))
       }
       else if (querytype===8){
-        var querytp=query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date') , orderBy('ADPF', "desc"), limit(limitreportvalue)  ,startAfter(lastreport)  )
+        var querytp=query(usercollectionref, where('resolvestatus','in',isresolvedview),where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date') , orderBy('ADPF', "desc"), limit(limitreportvalue)  ,startAfter(lastreport)  )
       }
       else if (querytype===9){
-        var querytp=query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date') , limit(limitreportvalue)  ,startAfter(lastreport) )
+        var querytp=query(usercollectionref, where('resolvestatus','in',isresolvedview),where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date') , limit(limitreportvalue)  ,startAfter(lastreport) )
       }
         const querySnapshot = await getDocs(querytp)
         querySnapshot.forEach((item) => {
@@ -108,7 +122,7 @@ const Explore = () => {
         document.getElementById('deltemodalbuttonid').click()
       }
       const deletedocument=()=>{
-        // console.log('deleting')
+        
         const reffff=doc(db, 'user', currdeleteid)
         deleteDoc(reffff).then((idd)=>{
           alert('deleted succesfully')
@@ -139,16 +153,16 @@ const Explore = () => {
 
       const sortcurrlocation = async()=>{
         setdata([])
-        const querySnapshot = await getDocs(query(usercollectionref,where('isdone',"==",true),where("address."+currloctype,"==",currlocvalue, limit(limitreportvalue)) ))
+        const querySnapshot = await getDocs(query(usercollectionref,where('isdone',"==",true), where('resolvestatus','==',false),where("address."+currloctype,"==",currlocvalue), limit(limitreportvalue)) )
         querySnapshot.forEach((item) => {
           setdata(prevState => [...prevState, item])
     }
     )
-    console.log(currloctype)
+    
     setcurrsorttype('Near you')
     setlastreport(querySnapshot.docs[querySnapshot.docs.length-1])
     setquerytype(2)
-    totalitems(query(usercollectionref,where('isdone',"==",true),where("address."+currloctype,"==",currlocvalue)) )
+    totalitems(query(usercollectionref,where('isdone',"==",true),where("address."+currloctype,"==",currlocvalue), where('resolvestatus','==',false) ))
     
       }
 
@@ -158,7 +172,7 @@ const Explore = () => {
           
         if(text==="Date, new to old" && text!==currsorttype){
           setdata([])
-        const querySnapshot = await getDocs(query(usercollectionref, where('isdone',"==",true), orderBy('date', "desc"), limit(limitreportvalue) ))
+        const querySnapshot = await getDocs(query(usercollectionref, where('isdone',"==",true), where('resolvestatus','==',false), orderBy('date', "desc"), limit(limitreportvalue) ))
     
         querySnapshot.forEach((item) => {
           setdata(prevState => [...prevState, item])
@@ -167,11 +181,11 @@ const Explore = () => {
     setcurrsorttype('Date, new to old')
     setlastreport(querySnapshot.docs[querySnapshot.docs.length-1])
     setquerytype(3)
-    totalitems(query(usercollectionref, where('isdone',"==",true), orderBy('date', "desc")))
+    totalitems(query(usercollectionref, where('isdone',"==",true), orderBy('date', "desc"), where('resolvestatus','==',false)))
           }
         else if (text==="Date, old to new" && text!==currsorttype){
           setdata([])
-        const querySnapshot = await getDocs(query(usercollectionref, where('isdone',"==",true), orderBy('date'), limit(limitreportvalue) ))
+        const querySnapshot = await getDocs(query(usercollectionref, where('resolvestatus','==',false), where('isdone',"==",true), orderBy('date'), limit(limitreportvalue) ))
         querySnapshot.forEach((item) => {
           setdata(prevState => [...prevState, item])
     }
@@ -179,7 +193,7 @@ const Explore = () => {
     setcurrsorttype('Date, old to new')
     setlastreport(querySnapshot.docs[querySnapshot.docs.length-1])
     setquerytype(4)
-    totalitems(query(usercollectionref, where('isdone',"==",true), orderBy('date')))
+    totalitems(query(usercollectionref, where('isdone',"==",true), orderBy('date'), where('resolvestatus','==',false)))
         }
         else if(text==="Near you" ){
           if (navigator.geolocation) {
@@ -222,7 +236,7 @@ const Explore = () => {
         }
         else if (text==="Hotest" && text!==currsorttype){
           setdata([])
-        const querySnapshot = await getDocs(query(usercollectionref, where('isdone',"==",true), orderBy('ADPF', "desc"), limit(limitreportvalue) ))
+        const querySnapshot = await getDocs(query(usercollectionref, where('resolvestatus','==',false), where('isdone',"==",true), orderBy('ADPF', "desc"), limit(limitreportvalue) ))
         querySnapshot.forEach((item) => {
           setdata(prevState => [...prevState, item])
     }
@@ -230,7 +244,7 @@ const Explore = () => {
     setcurrsorttype('Hotest')
     setlastreport(querySnapshot.docs[querySnapshot.docs.length-1])
     setquerytype(5)
-    totalitems(query(usercollectionref, where('isdone',"==",true), orderBy('ADPF', "desc")))
+    totalitems(query(usercollectionref, where('isdone',"==",true), orderBy('ADPF', "desc"), where('resolvestatus','==',false)))
         }
         document.getElementById('loadingfirebasespinner').style.display='none'
       }
@@ -240,7 +254,7 @@ const Explore = () => {
         const longitude=tpmarkerlocation[0].lng
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`);
            let data = await response.json();
-           console.log(data)
+           
            setadvancecurrdata([])
            var tmplst=[]
            var options=[]
@@ -318,53 +332,63 @@ const Explore = () => {
       const advancesearchquery= async()=>{
         const isnewtoold=document.getElementById("sortnewtoold").checked
         const ishotest= document.getElementById("sorthotest").checked
+        var sortresolved = document.getElementById("sortresolved").checked
+        if(sortresolved===true){
+          sortresolved=[true , false]
+        }
+        else{
+          sortresolved=[sortresolved]
+        }
+        setisresolvedview(sortresolved)
         if (isnewtoold && ishotest){
           setdata([])
-          const querySnapshot = await getDocs(query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date', "desc") , orderBy('ADPF', "desc")  , limit(limitreportvalue)))
+          const querySnapshot = await getDocs(query(usercollectionref, where('resolvestatus','in',sortresolved),where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date', "desc") , orderBy('ADPF', "desc")  , limit(limitreportvalue)))
           querySnapshot.forEach((item) => {
             setdata(prevState => [...prevState, item])
       }
       )
       setlastreport(querySnapshot.docs[querySnapshot.docs.length-1])
       setquerytype(6)
-      totalitems(query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date', "desc") , orderBy('ADPF', "desc")));
+      totalitems(query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) , where('resolvestatus','in',sortresolved),  where('isdone',"==",true), orderBy('date', "desc") , orderBy('ADPF', "desc")));
         }
         else if(isnewtoold){
           setdata([])
-          const querySnapshot = await getDocs(query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date', "desc"), limit(limitreportvalue)))
+          const querySnapshot = await getDocs(query(usercollectionref, where('resolvestatus','in',sortresolved),where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date', "desc"), limit(limitreportvalue)))
           querySnapshot.forEach((item) => {
             setdata(prevState => [...prevState, item])
       }
       )
       setlastreport(querySnapshot.docs[querySnapshot.docs.length-1])
       setquerytype(7)
-      totalitems(query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date', "desc")))
+      totalitems(query(usercollectionref, where('resolvestatus','in',sortresolved),where("address."+adcurrloctype,"==",adcurrlocvalue) , where('resolvestatus','==',false),  where('isdone',"==",true), orderBy('date', "desc")))
 
         }
         else if(ishotest){
           setdata([])
-          const querySnapshot = await getDocs(query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date') , orderBy('ADPF', "desc") , limit(limitreportvalue) ))
+          const querySnapshot = await getDocs(query(usercollectionref, where('resolvestatus','in',sortresolved),where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date') , orderBy('ADPF', "desc") , limit(limitreportvalue) ))
           querySnapshot.forEach((item) => {
             setdata(prevState => [...prevState, item])
       }
       )
       setlastreport(querySnapshot.docs[querySnapshot.docs.length-1])
       setquerytype(8)
-      totalitems(query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date') , orderBy('ADPF', "desc") ))
+      totalitems(query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue), where('resolvestatus','in',sortresolved) ,  where('isdone',"==",true), orderBy('date') , orderBy('ADPF', "desc") ))
         }
         else{
           setdata([])
-          const querySnapshot = await getDocs(query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date')  , limit(limitreportvalue)))
+          const querySnapshot = await getDocs(query(usercollectionref, where('resolvestatus','in',sortresolved),where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date')  , limit(limitreportvalue)))
           querySnapshot.forEach((item) => {
             setdata(prevState => [...prevState, item])
       }
       )
       setlastreport(querySnapshot.docs[querySnapshot.docs.length-1])
       setquerytype(9)
-      totalitems(query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue) ,  where('isdone',"==",true), orderBy('date')))
+      totalitems(query(usercollectionref,where("address."+adcurrloctype,"==",adcurrlocvalue), where('resolvestatus','in',sortresolved) ,  where('isdone',"==",true), orderBy('date')))
         }
 
         setcurrsorttype('ADVANCE')
+        document.getElementById('dropdownMenuButton29').innerText='ADVANCE'
+        document.getElementById('advancesearchqueryclose').click()
         
       }
 
@@ -419,14 +443,14 @@ const Explore = () => {
         }
         else if(data.isvideo===false && data.isdone){
           
-          console.log("done")
+          
           var files=[]
           data.outimages.map((i)=>{
             files.push({src:i})
           })
           setslide(files)
           setOpen(true)
-          console.log(files)
+          
         }
         else if(data.isvideo===false){
           var files=[]
@@ -439,6 +463,65 @@ const Explore = () => {
       }
   return (
     <>
+
+    {/* view user  */}
+    <div className="modal top fade" id="exampleModaluserview" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="true" data-mdb-keyboard="true">
+  <div className="modal-dialog modal-fullscreen   modal-dialog-centered">
+    <div className="modal-content" style={{background: "transparent",boxShadow: "none"}}>
+      <div className="modal-body">
+      <section className="vh-100">
+  <div className="container py-5 h-100">
+    <div className="row d-flex justify-content-center align-items-center h-100">
+      <div className="col col-md-9 col-lg-7 col-xl-5">
+        <div className="card" style={{borderRadius: "15px"}}>
+        <button type="button" className="btn-close" data-mdb-dismiss="modal" aria-label="Close" style={{    position: "absolute",right: "0px",
+    padding: "13px"}}></button>
+          <div className="card-body p-4">
+            <div className="d-flex text-black">
+              <div className="flex-shrink-0">
+                <img src={viewuserdata.photourl}
+                  alt="Generic placeholder image" className="img-fluid"
+                  style={{width: "180px", borderRadius: "10px"}}/>
+              </div>
+              <div className="flex-grow-1 ms-3" style={{    overflow: "overlay"}}>
+                <h5 className="mb-1">{viewuserdata.name} &nbsp;
+            <MDBTooltip  tooltipTag='span'  tag='span'title="Verified User">
+            {viewuserdata.isverified}
+            </MDBTooltip> </h5>
+                <p className="mb-2 pb-1" style={{color: "#2b2a2a"}}>{viewuserdata.email}</p>
+                <div className="d-flex justify-content-start rounded-3 p-2 mb-2"
+                  style={{backgroundColor: "#efefef"}}>
+                  <div>
+                    <p className="small text-muted mb-1">Contribution</p>
+                    <p className="mb-0">{viewuserdata.contribution}</p>
+                  </div>
+                  <div className="px-3">
+                    <p className="small text-muted mb-1">Likes</p>
+                    <p className="mb-0">{viewuserdata.likes}</p>
+                  </div>
+                  <div>
+                    <p className="small text-muted mb-1">Comments</p>
+                    <p className="mb-0">{viewuserdata.Comments}</p>
+                  </div>
+                </div>
+                <div className="d-flex pt-1">
+                  <a type="button" className="btn btn-outline-primary me-1 flex-grow-1" href = "mailto: abc@example.com">Email</a>
+                  {/* <button type="button" className="btn btn-primary flex-grow-1">Follow</button> */}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
     {/* advance search query modal  */}
     <div className="modal top fade" id="advancesearchquerymodal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="true" data-mdb-keyboard="true">
   <div className="modal-dialog modal-lg  modal-dialog-centered">
@@ -485,9 +568,15 @@ const Explore = () => {
   <input className="form-check-input" type="checkbox" value="" id="sorthotest" defaultChecked />
   <label className="form-check-label" htmlFor="sorthotest">SORT : Hotest ?</label>
 </div>
+
+<div className="form-check mt-4">
+  <input className="form-check-input" type="checkbox" value="" id="sortresolved" defaultChecked />
+  <label className="form-check-label" htmlFor="sortresolved">Include RESOLVED ?</label>
+</div>
+
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn btn-secondary" data-mdb-dismiss="modal">
+        <button type="button" className="btn btn-secondary" id='advancesearchqueryclose' data-mdb-dismiss="modal">
           Close
         </button>
         <button type="button" className="btn btn-primary"  onClick={advancesearchquery}>SORT</button>
@@ -588,7 +677,10 @@ const Explore = () => {
     <li><a className="dropdown-item" href="#!"onClick={()=>{sortbyselect("Date, old to new")}}>Date, old to new</a></li>
     <li><a className="dropdown-item" href="#!"onClick={()=>{sortbyselect("Hotest")}}>Hotest</a></li>
     <li><a className="dropdown-item" href="#!"onClick={()=>{sortbyselect("Near you")}}>Near you</a></li>
+    <li><hr className="dropdown-divider" /></li>
     <li><a className="dropdown-item" href="#!"data-mdb-toggle="modal" data-mdb-target="#advancesearchquerymodal" onClick={defaultlocationadvancemodal}>ADVANCE</a></li>
+    
+    
   </ul>
 </div>
   </div>
@@ -609,9 +701,10 @@ const Explore = () => {
 <section style={{backgroundColor: "#eee"}}>
   <div className="container py-5">
 {data.map(item=>{
-  
+
   modalincrement+=1
-  return (<Card id={item.id} setslides={setslides}   data={item.data()} key={item.id}  modalincrement={modalincrement}   setmaplocation={setmarkerlocation}  deletedoc={deletedocpromp} update={setupdateid}/>)
+  return (<Card id={item.id} setviewuserdata={setviewuserdata} diffuserdata={diffuserdata} setdiffuserdata={setdiffuserdata} setslides={setslides}   data={item.data()} key={item.id}  modalincrement={modalincrement}   setmaplocation={setmarkerlocation}  deletedoc={deletedocpromp} update={setupdateid}/>)
+  
 })}
 
 <div className="row justify-content-center mb-3" >

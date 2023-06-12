@@ -7,6 +7,7 @@ import Viewuser from '../Explore/Viewuser'
 import { RWebShare } from "react-web-share";
 import Bar_chart from '../Dashboard/Bar_chart'
 import { MDBTooltip } from 'mdb-react-ui-kit';
+import Resolved from '../Dashboard/Resolved'
 
 const card = (item) => {
     var isfirst=true;
@@ -336,6 +337,7 @@ className="w-100" alt='alternate' />)
     <>
     <div className="row justify-content-center mb-3" >
     <div className="col-md-12 col-xl-10">
+    {item.data.resolved?item.data.reopen?<span className='badge  badge-danger w-100 p-2' >RE-OPENED</span>:<span className='badge  badge-success w-100 p-2' >RESOLVED</span>:<></>}
       <div className="card shadow-0 border rounded-3">
         <div className="card-body">
           <div className="row">
@@ -353,7 +355,7 @@ className="w-100" alt='alternate' />)
             </div>
             <div className="col-md-6 col-lg-6 col-xl-6">
                 
-             <Viewuser item={item}/>
+             <Viewuser item={item} setviewuserdata={item.setviewuserdata} diffuserdata={item.diffuserdata} setdiffuserdata={item.setdiffuserdata}/>
               
               <div >
                 {outputgenerator(item.data , item.id)}
@@ -391,7 +393,7 @@ className="w-100" alt='alternate' />)
           title: "RQ-A",
         }}
         onClick={() => console.log("shared successfully!")}
-      >
+      > 
         
                 <button type="button" className="btn btn-outline-secondary    btn-sm" data-mdb-ripple-color="#000000"> Share <i className="fas fa-share ms-1"></i></button>
       </RWebShare>
@@ -400,6 +402,7 @@ className="w-100" alt='alternate' />)
               </div>
             </div>
           </div>
+          <Resolved id={item.id} data ={item.data}   reopen={false}/>
         </div>
       </div>
     </div>

@@ -12,7 +12,7 @@ import { UseUserAuth } from '../../context/UserAuthContext'
 import Submitmodal from '../Uploadvideo/Submitmodal';
 import { toast, Toaster } from "react-hot-toast";
 import Loader from '../Loader';
-
+import KickURL from '../KickURL';
 const Pictorial = () => {
 
   const { user} = UseUserAuth();
@@ -78,16 +78,15 @@ const Pictorial = () => {
         Promise.all(promises)
             .then( async() => {
             
-            const docRef = await addDoc(usercollectionref,{name:user.displayName , email:user.email , photourl:user.photoURL , 
+            const docRef = await addDoc(usercollectionref,{name:user.displayName ,resolvestatus:false, email:user.email , photourl:user.photoURL , 
                date:Date.now(),fileurl:fileurl  ,isvideo:false,isgeocord:false, address:address ,message:message? message:null  , location:geolocation});
                
-              addDoc(needdetection,{docid:docRef.id,fileurl:fileurl,isvideo:false , islive:false}).then(()=>{
+              const needdetdoc = await addDoc(needdetection,{docid:docRef.id,fileurl:fileurl,isvideo:false , islive:false})
                 setLoaded(false)
                 toast.success('All images uploaded Successfully!')
                 setFiles([])
                 document.getElementsByClassName('fileuploadprogress')[0].style.width=`100%`
-              })
-              
+                KickURL(needdetdoc.id)
           }
             )
             .catch(err => {setLoaded(false),toast.error(err.message)})

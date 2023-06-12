@@ -13,9 +13,14 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import {activelink,hamburgermenu,svgsmoothscroll,scrollClickEvents,closenav} from './Sitejavascript'
+import KickURL from '../KickURL';
+
+
+
 const Site = () => {
     const {user,googleSignIn,authenticationdone} = UseUserAuth();
     const [lightboxindex, setlightboxIndex] = useState(-1);
+
   const photos = [
     { src: "/images/services-offered4.png", width: 708, height: 472 },
     { src: "/images/services-offered1.png", width: 472, height: 708 },

@@ -2,6 +2,7 @@ import React from 'react'
 import LoadingOverlay from "react-loading-overlay";
 import styled, { css } from "styled-components";
 import BounceLoader from "react-spinners/BounceLoader";
+LoadingOverlay.propTypes = undefined
 function Loader(props) {
     const DarkBackground = styled.div`
     display: none; 
@@ -21,17 +22,16 @@ function Loader(props) {
         display: block; /* show */
       `}
   `;
-  return (
+  return (<>
     <DarkBackground disappear={props.loader}>
         <LoadingOverlay
           active={true}
           spinner={<BounceLoader />}
-        //   spinner={true}
           text="Uploading..."
         >
-          {/* <p>Some content or children or something.</p> */}
         </LoadingOverlay>
       </DarkBackground>
+      </>
   )
 }
 
