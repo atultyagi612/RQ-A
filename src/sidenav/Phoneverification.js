@@ -42,16 +42,16 @@ const Phoneverification = () => {
         const randomotp=Math.floor(100000 + Math.random() * 900000)
         setrandomopt(randomotp)
         const response = await axios.post(
-          'https://api.twilio.com/2010-04-01/Accounts/XXXXXXXXXXXXXXXXXXXXXXX/Messages.json',
+          'https://api.twilio.com/2010-04-01/Accounts/AC2d8209c25be19fde25371fa26546ec0e/Messages.json',
           new URLSearchParams({
             'To': phoneno,
-            'MessagingServiceSid': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+            'MessagingServiceSid': 'MGe0d7ffbba5bca659bccda71d5b800199',
             'Body': 'Your OTP for RQ-A is: '+randomotp
           }),
           {
             auth: {
-              username: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-              password: 'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
+              username: 'AC2d8209c25be19fde25371fa26546ec0e',
+              password: 'f547ab43320e17a713764045f3c1c541'
             }
           }
         );
@@ -79,7 +79,7 @@ const Phoneverification = () => {
       }
   return (
     <>
-    <Toaster toastOptions={{ duration: 4000 }} />
+    {/* <Toaster toastOptions={{ duration: 4000 }} /> */}
 <button type="button" className="btn btn-primary" id='phoneverificationmmodal' data-mdb-toggle="modal" data-mdb-target="#exampleModalphoneverification" style={{display:"none"}}>
 </button>
 
